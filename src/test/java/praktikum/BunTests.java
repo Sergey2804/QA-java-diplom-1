@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import praktikum.Bun;
 
+import static praktikum.BurgerTests.*;
+
 @RunWith(Parameterized.class)
 public class BunTests {
 
@@ -22,8 +24,8 @@ public class BunTests {
     @Parameterized.Parameters
     public static Object[][] getBun() {
         return new Object[][]{
-                {"Bunny", 2.3f, new Bun("Bunny", 2.3f)},
-                {"Булочка", 80.22f, new Bun("Булочка", 80.22f)}
+                {"Bunny", PRICE_OF_BUN_1, new Bun("Bunny", PRICE_OF_BUN_1)},
+                {"Булочка", PRICE_OF_BUN_3, new Bun("Булочка", PRICE_OF_BUN_3)}
         };
     }
 
@@ -34,6 +36,6 @@ public class BunTests {
 
     @Test
     public void getPrice() {
-        Assert.assertEquals(bunPrice, bun.getPrice(), 0f);
+        Assert.assertEquals(bunPrice, bun.getPrice(), PRICE_DELTA);
     }
 }

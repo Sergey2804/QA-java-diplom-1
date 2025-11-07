@@ -10,11 +10,19 @@ import org.mockito.junit.MockitoJUnitRunner;
 import praktikum.Ingredient;
 import praktikum.IngredientType;
 
+import static praktikum.BurgerTests.PRICE_DELTA;
+
 @RunWith(MockitoJUnitRunner.class)
 public class IngredientTests {
 
     @Mock
     private Ingredient mockIngredient;
+
+    private static final float PRICE_OF_MOCKINGREDIENT_1 = 2.5f;
+    private static final float PRICE_OF_MOCKINGREDIENT_2 = 9.5f;
+
+
+
 
     @Before
     public void setUp(){}
@@ -34,8 +42,8 @@ public class IngredientTests {
 
     @Test
     public void getPriceNoParameters() {
-        Mockito.when(mockIngredient.getPrice()).thenReturn(2.5f);
-        Assert.assertEquals("getPrice() didn't return correct price", 2.5f, mockIngredient.getPrice(), 0.0f);
+        Mockito.when(mockIngredient.getPrice()).thenReturn(PRICE_OF_MOCKINGREDIENT_1);
+        Assert.assertEquals("getPrice() didn't return correct price", PRICE_OF_MOCKINGREDIENT_1, mockIngredient.getPrice(), PRICE_DELTA);
     }
 
     @Test
@@ -55,8 +63,8 @@ public class IngredientTests {
 
     @Test
     public void setPriceUpdated() {
-        mockIngredient.price = 9.5f;
-        Mockito.when(mockIngredient.getPrice()).thenReturn(9.5f);
-        Assert.assertEquals("setPrice() should set correct price", 9.5f, mockIngredient.getPrice(), 0.0f);
+        mockIngredient.price = PRICE_OF_MOCKINGREDIENT_2;
+        Mockito.when(mockIngredient.getPrice()).thenReturn(PRICE_OF_MOCKINGREDIENT_2);
+        Assert.assertEquals("setPrice() should set correct price", PRICE_OF_MOCKINGREDIENT_2, mockIngredient.getPrice(), PRICE_DELTA);
     }
 }

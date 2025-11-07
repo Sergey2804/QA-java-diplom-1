@@ -3,14 +3,72 @@ package praktikum;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import praktikum.Bun;
 import praktikum.Burger;
 import praktikum.Ingredient;
 import praktikum.IngredientType;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+@RunWith(Parameterized.class)
 public class BurgerTests {
 
     private Burger burger;
+
+    // Параметры для тестов
+    private final Bun bun;
+    private final Ingredient firstIngredient;
+    private final Ingredient secondIngredient;
+    private final float expectedTotalPrice;
+    private final String testDescription;
+    static final float PRICE_DELTA = 0.0f;
+    static final float PRICE_OF_BUN_1 = 3.5f;
+    private static final float PRICE_OF_BUN_2 = 5f;
+    static final float PRICE_OF_BUN_3 = 10f;
+    private static final float PRICE_OF_SAUCE_1 = 3.5f;
+    private static final float PRICE_OF_SAUCE_2 = 2.5f;
+    private static final float PRICE_OF_SAUCE_3 = 10.5f;
+    private static final float PRICE_OF_FILLY_1 = 6.5f;
+    private static final float PRICE_OF_FILLY_2 = 11.5f;
+
+    public BurgerTests(Bun bun, Ingredient firstIngredient, Ingredient secondIngredient,
+                       float expectedTotalPrice, String testDescription) {
+        this.bun = bun;
+        this.firstIngredient = firstIngredient;
+        this.secondIngredient = secondIngredient;
+        this.expectedTotalPrice = expectedTotalPrice;
+        this.testDescription = testDescription;
+    }
+
+    @Parameterized.Parameters(name = "{4}")
+    public static Collection<Object[]> getTestData() {
+        return Arrays.asList(new Object[][]{
+                {
+                        new Bun("Булочка", PRICE_OF_BUN_1),
+                        new Ingredient(IngredientType.SAUCE, "Saucy", PRICE_OF_SAUCE_1),
+                        new Ingredient(IngredientType.FILLING, "Filly", PRICE_OF_FILLY_1),
+                        17f,
+                        "Булочка 3.5 + соус 3.5 + начинка 6.5"
+                },
+                {
+                        new Bun("Белая булочка", PRICE_OF_BUN_3),
+                        new Ingredient(IngredientType.SAUCE, "Соус", PRICE_OF_SAUCE_3),
+                        new Ingredient(IngredientType.FILLING, "Начинки", PRICE_OF_FILLY_2),
+                        42f,
+                        "Булочка 10.0 + соус 10.5 + начинка 11.5"
+                },
+                {
+                        new Bun("Черная булочка", PRICE_OF_BUN_2),
+                        new Ingredient(IngredientType.SAUCE, "Кетчуп", PRICE_OF_SAUCE_2),
+                        new Ingredient(IngredientType.FILLING, "Котлета", PRICE_OF_FILLY_1),
+                        19f,
+                        "Булочка 5.0 + кетчуп 2.5 + котлета 6.5"
+                }
+        });
+    }
 
     @Before
     public void setUp() {
@@ -18,63 +76,73 @@ public class BurgerTests {
     }
 
     @Test
-    public void setBunsBunGetsCorrectBun() {
-        Bun bun = new Bun("Булочка", 3.5f);
+    public void setBunsShouldSetCorrectBun() {
         burger.setBuns(bun);
-        Assert.assertEquals("Булочек нет", bun, burger.bun);
+        Assert.assertEquals("Булочка должна быть установлена", bun, burger.bun);
     }
 
     @Test
-    public void addIngredient() {
-        Ingredient ingredient = new Ingredient(IngredientType.SAUCE, "Saucy", 3.5f);
-        burger.addIngredient(ingredient);
-        Assert.assertEquals("Добавлено больше одного ингредиента", 1, burger.ingredients.size());
-        Assert.assertEquals("Добавлен несуществующий ингредиент", ingredient, burger.ingredients.get(0));
+    public void addIngredientShouldIncreaseIngredientsCount() {
+        int initialSize = burger.ingredients.size();
+        burger.addIngredient(firstIngredient);
+
+        Assert.assertEquals("Количество ингредиентов должно увеличиться на 1",
+                initialSize + 1, burger.ingredients.size());
+
     }
 
     @Test
-    public void removeIngredient() {
-        Ingredient ingredient = new Ingredient(IngredientType.SAUCE, "Saucy", 2.5f);
-        burger.addIngredient(ingredient);
-        Assert.assertEquals("Добавлено больше одного ингредиента", 1, burger.ingredients.size());
+    public void removeIngredientShouldDecreaseIngredientsCount() {
+        burger.addIngredient(firstIngredient);
+        int sizeAfterAdd = burger.ingredients.size();
+
         burger.removeIngredient(0);
-        Assert.assertEquals("Ингредиент не удален", 0, burger.ingredients.size());
+
+        Assert.assertEquals("Количество ингредиентов должно уменьшиться на 1",
+                sizeAfterAdd - 1, burger.ingredients.size());
     }
 
     @Test
-    public void moveIngredient() {
-        Ingredient ingredient1 = new Ingredient(IngredientType.SAUCE, "Saucy", 2.5f);
-        Ingredient ingredient2 = new Ingredient(IngredientType.FILLING, "Filly", 6.5f);
-        burger.addIngredient(ingredient1);
-        burger.addIngredient(ingredient2);
+    public void moveIngredientShouldChangeIngredientPosition() {
+        burger.addIngredient(firstIngredient);
+        burger.addIngredient(secondIngredient);
+
         burger.moveIngredient(0, 1);
-        Assert.assertEquals("Ингредиент перемещён в неправильное положение", ingredient1, burger.ingredients.get(1));
-        Assert.assertEquals("Ингредиент перемещён в неправильное положение", ingredient2, burger.ingredients.get(0));
+
+        Assert.assertEquals("Первый ингредиент должен переместиться на вторую позицию",
+                firstIngredient, burger.ingredients.get(1));
+
     }
 
     @Test
-    public void getPriceBunTwoIngredients() {
-        Ingredient ingredient1 = new Ingredient(IngredientType.SAUCE, "Saucy", 2.5f);
-        Ingredient ingredient2 = new Ingredient(IngredientType.FILLING, "Filly", 6.5f);
-        Bun bun = new Bun("Булочка", 5f);
-        burger.addIngredient(ingredient1);
+    public void getPriceShouldCalculateCorrectTotalPrice() {
         burger.setBuns(bun);
-        burger.addIngredient(ingredient2);
-        Assert.assertEquals(19f, burger.getPrice(), 0f);
+        burger.addIngredient(firstIngredient);
+        burger.addIngredient(secondIngredient);
+
+        float actualPrice = burger.getPrice();
+        Assert.assertEquals("Общая цена должна корректно рассчитываться: " + testDescription,
+                expectedTotalPrice, actualPrice, PRICE_DELTA);
     }
 
     @Test
-    public void getReceiptBunTwoIngredients() {
-        Ingredient ingredient1 = new Ingredient(IngredientType.SAUCE, "Соус", 10.5f);
-        Ingredient ingredient2 = new Ingredient(IngredientType.FILLING, "Начинки", 11.5f);
-        Bun bun = new Bun("Булочка", 10f);
-        burger.addIngredient(ingredient1);
+    public void getReceiptShouldReturnCorrectFormat() {
         burger.setBuns(bun);
-        burger.addIngredient(ingredient2);
-        String expectedReceipt = String.format("(==== %s ====)%n", bun.getName())
-                + String.format("= %s %s =%n", ingredient1.getType().toString().toLowerCase(),
-                ingredient1.getName()) + String.format("= %s %s =%n", ingredient2.getType().toString().toLowerCase(),
-                ingredient2.getName()) + String.format("(==== %s ====)%n", bun.getName()) + String.format("%nPrice: %f%n", 42f);
-        Assert.assertEquals("Рецепты отличаются", expectedReceipt, burger.getReceipt());
+        burger.addIngredient(firstIngredient);
+        burger.addIngredient(secondIngredient);
+
+        String expectedReceipt = buildExpectedReceipt();
+        String actualReceipt = burger.getReceipt();
+
+        Assert.assertEquals("Чек должен быть сформирован корректно: " + testDescription,
+                expectedReceipt, actualReceipt);
+    }
+
+    private String buildExpectedReceipt() {
+        return String.format("(==== %s ====)%n", bun.getName())
+                + String.format("= %s %s =%n", firstIngredient.getType().toString().toLowerCase(), firstIngredient.getName())
+                + String.format("= %s %s =%n", secondIngredient.getType().toString().toLowerCase(), secondIngredient.getName())
+                + String.format("(==== %s ====)%n", bun.getName())
+                + String.format("%nPrice: %f%n", expectedTotalPrice);
     }
 }
