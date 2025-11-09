@@ -26,13 +26,13 @@ public class BurgerTests {
     private final String testDescription;
     static final float PRICE_DELTA = 0.0f;
     static final float PRICE_OF_BUN_1 = 3.5f;
-    private static final float PRICE_OF_BUN_2 = 5f;
+    static final float PRICE_OF_BUN_2 = 5f;
     static final float PRICE_OF_BUN_3 = 10f;
-    private static final float PRICE_OF_SAUCE_1 = 3.5f;
-    private static final float PRICE_OF_SAUCE_2 = 2.5f;
-    private static final float PRICE_OF_SAUCE_3 = 10.5f;
-    private static final float PRICE_OF_FILLY_1 = 6.5f;
-    private static final float PRICE_OF_FILLY_2 = 11.5f;
+    static final float PRICE_OF_SAUCE_1 = 3.5f;
+    static final float PRICE_OF_SAUCE_2 = 2.5f;
+    static final float PRICE_OF_SAUCE_3 = 10.5f;
+    static final float PRICE_OF_FILLY_1 = 6.5f;
+    static final float PRICE_OF_FILLY_2 = 11.5f;
 
     public BurgerTests(Bun bun, Ingredient firstIngredient, Ingredient secondIngredient,
                        float expectedTotalPrice, String testDescription) {
@@ -73,45 +73,6 @@ public class BurgerTests {
     @Before
     public void setUp() {
         burger = new Burger();
-    }
-
-    @Test
-    public void setBunsShouldSetCorrectBun() {
-        burger.setBuns(bun);
-        Assert.assertEquals("Булочка должна быть установлена", bun, burger.bun);
-    }
-
-    @Test
-    public void addIngredientShouldIncreaseIngredientsCount() {
-        int initialSize = burger.ingredients.size();
-        burger.addIngredient(firstIngredient);
-
-        Assert.assertEquals("Количество ингредиентов должно увеличиться на 1",
-                initialSize + 1, burger.ingredients.size());
-
-    }
-
-    @Test
-    public void removeIngredientShouldDecreaseIngredientsCount() {
-        burger.addIngredient(firstIngredient);
-        int sizeAfterAdd = burger.ingredients.size();
-
-        burger.removeIngredient(0);
-
-        Assert.assertEquals("Количество ингредиентов должно уменьшиться на 1",
-                sizeAfterAdd - 1, burger.ingredients.size());
-    }
-
-    @Test
-    public void moveIngredientShouldChangeIngredientPosition() {
-        burger.addIngredient(firstIngredient);
-        burger.addIngredient(secondIngredient);
-
-        burger.moveIngredient(0, 1);
-
-        Assert.assertEquals("Первый ингредиент должен переместиться на вторую позицию",
-                firstIngredient, burger.ingredients.get(1));
-
     }
 
     @Test
